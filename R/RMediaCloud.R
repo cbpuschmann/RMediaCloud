@@ -68,7 +68,8 @@ mc_stories_list <- function(q = "", media = "", collection = "", date_from = "",
   if (date_from != "" | date_to != "") fq <- paste0(fq, "&fq=publish_date:%5B", date_from, "T00:00:00.000Z+TO+", date_to, "T00:00:00.000Z%5D")
   if (collection == "" & date_from == "" & date_to == "") fq <- ""
   api.url <- paste0(q.stories_public.list, "?q=", URLencode(q), fq, "&feeds_id=", feeds_id, "&rows=", rows, "&last_processed_stories_id=", last_processed_stories_id, "&key=", key)
-  result <- fromJSON(api.url) %>% select(-story_tags)  # omit tags to simplify results data frame
+  result <- fromJSON(api.url)
+  if (!is.list(result)) result <- select(result, -story_tags)  # omit tags to simplify results data frame
   return(result)
 }
 
