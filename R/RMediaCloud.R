@@ -118,12 +118,14 @@ mc_stories_wm <- function(q = "", media = "", collection = "", date_from = "", d
 
 mc_wordcounts <- function(q = "", media = "", collection = "", date_from = "", date_to = "", num_words = 50, sample_size = 100, remove_stopwords = TRUE, key)
 {
-  if (media != "") q <- paste0(q, " AND media_id:", media)
+  if (media != "")
+    if (q == "") q <- paste0("media_id:", media)
+    else q <- paste0(q, " AND media_id:", media)
   if (collection != "") fq <- paste0("&fq=tags_id_media:", collection) else fq <- ""
   if (date_from != "" | date_to != "") fq <- paste0(fq, "&fq=publish_date:%5B", date_from, "T00:00:00.000Z+TO+", date_to, "T00:00:00.000Z%5D")
   if (collection == "" & date_from == "" & date_to == "") fq <- ""
   if (remove_stopwords) include_stopwords <- 0 else include_stopwords <- 1
-  api.url <- paste0(q.wc.list, "?q=", URLencode(q), "&fq=", fq, "&num_words=", num_words, "&sample_size=", sample_size, "&include_stopwords=", include_stopwords, "&include_stats=", include_stats, "&key=", key)
+  api.url <- paste0(q.wc.list, "?q=", URLencode(q), "&fq=", fq, "&num_words=", num_words, "&sample_size=", sample_size, "&include_stopwords=", include_stopwords, "&key=", key)
   result <- fromJSON(api.url)
   return(result)
 }
